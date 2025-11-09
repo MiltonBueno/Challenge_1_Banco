@@ -1,16 +1,17 @@
 package domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 import domain.account.Account;
 
-public class Client extends BaseEntity{
+public class Client extends BaseIdEntity{
 	
-	private String name;
-	private List<Account> accounts;
-    private String password;
+	private final String name;
+    private final String password;
+	private final List<Account> accounts = new ArrayList<>();
 
 	public Client(String name, String password) {
 		this.name = name;
@@ -25,16 +26,8 @@ public class Client extends BaseEntity{
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String getPassword() {
 		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public List<Account> getAccounts() {
@@ -43,10 +36,6 @@ public class Client extends BaseEntity{
 	
 	public void addAccount(Account account) {
 		accounts.add(account);
-	}
-	
-	public void removeAccount(Account account) {
-		accounts.remove(account);
 	}
 	
     public boolean validatePassword(String input) {
@@ -72,7 +61,7 @@ public class Client extends BaseEntity{
 
 	@Override
 	public String toString() {
-		return "Client [id=" + id + ", name=" + name + ", accounts=" + accounts + "]";
+		return "Client [id=" + id + ", name=" + name + ", numberOfAccounts=" + accounts.size() + "]";
 	}
 	
 }

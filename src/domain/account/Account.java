@@ -4,31 +4,26 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
-import domain.BaseEntity;
+import domain.Agency;
 import domain.Client;
 import domain.transaction.Transaction;
 
-public abstract class Account extends BaseEntity {
-	
-	private Client client;
-	private String accountNumber;
-	private String agencyNumber;
+public abstract class Account{
+
+	private final String accountNumber;
+	private final Client client;
+	private final Agency agency;
     protected BigDecimal balance = BigDecimal.ZERO;
     protected BigDecimal limit = BigDecimal.ZERO;
-	private List<Transaction> transactions = new ArrayList<>();
+	private final List<Transaction> transactions = new ArrayList<>();
 
-	public Account(Client client, String accountNumber, String agencyNumber, BigDecimal balance, BigDecimal limit) {
-		this.client = client;
+	public Account(String accountNumber, Client client, Agency agency, BigDecimal balance, BigDecimal limit) {
 		this.accountNumber = accountNumber;
-		this.agencyNumber = agencyNumber;
+		this.client = client;
+		this.agency = agency;
 		this.balance = balance;
 		this.limit = limit;
-	}
-
-	public UUID getId() {
-		return id;
 	}
 
 	public Client getClient() {
@@ -39,8 +34,8 @@ public abstract class Account extends BaseEntity {
 		return accountNumber;
 	}
 
-	public String getAgencyNumber() {
-		return agencyNumber;
+	public Agency getAgency() {
+		return agency;
 	}
 
 	public BigDecimal getBalance() {
@@ -66,29 +61,27 @@ public abstract class Account extends BaseEntity {
 	public void addTransaction(Transaction transaction) {
 		transactions.add(transaction);
 	}
-
-	public void removeTransaction(Transaction transaction) {
-		transactions.remove(transaction);
+	
+	public void withdrawValue(BigDecimal amount) {
+	    balance = balance.subtract(amount);
 	}
 	
-	public void withdrawValue(String value) {
-	    BigDecimal withdrawedValue = new BigDecimal(value);
-	    balance = balance.subtract(withdrawedValue);
+	public void depositValue(BigDecimal amount) {
+	    balance = balance.add(amount);
 	}
 	
-	public void depositValue(String value) {
-	    BigDecimal addedValue = new BigDecimal(value);
-	    balance = balance.add(addedValue);
+	public void receiveTransfer(BigDecimal amount) {
+	    balance = balance.add(amount);
 	}
 	
-	public void transferValue(String value, Account targetAccount) {
-	    BigDecimal transferedValue = new BigDecimal(value);
-	    balance = balance.subtract(transferedValue);
+	public void transferValue(BigDecimal amount, Account targetAccount) {
+	    balance = balance.subtract(amount);
+	    targetAccount.receiveTransfer(amount);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return Objects.hash(accountNumber);
 	}
 
 	@Override
@@ -100,13 +93,18 @@ public abstract class Account extends BaseEntity {
 		if (getClass() != obj.getClass())
 			return false;
 		Account other = (Account) obj;
-		return Objects.equals(id, other.id);
+		return Objects.equals(accountNumber, other.accountNumber);
 	}
+
+	public abstract String getAccountType();
 
 	@Override
 	public String toString() {
-		return "Account [id=" + id + ", client=" + client + ", accountNumber=" + accountNumber + ", agencyNumber=" + agencyNumber
-				+ ", balance=" + balance + ", limit=" + limit + ", transactions=" + transactions + "]";
+		return getAccountType() + " #" + accountNumber + 
+		       " | Owner: " + client.getName() + 
+		       " | Agency: " + agency.getAgencyNumber() + 
+		       " | Balance: " + balance + 
+		       " | Limit: " + limit;
 	}
 	
 }

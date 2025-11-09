@@ -1,26 +1,41 @@
 package domain.transaction;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-import domain.BaseEntity;
+import domain.BaseIdEntity;
 import domain.account.Account;
-import domain.transaction.enums.TransactionType;
+import exceptions.InvalidInputException;
 
-public class Transaction extends BaseEntity {
+public class Transaction extends BaseIdEntity {
 	
-	private LocalDateTime transactionTime = LocalDateTime.now();
-    private Double amount;
-	private TransactionType type;
-    private Account sourceAccount;
-    private Account targetAccount;
+	private final LocalDateTime transactionTime = LocalDateTime.now();
+    private final BigDecimal amount;
+	private final TransactionType type;
+    private final Account sourceAccount;
+    private final Account targetAccount;
 
-	public Transaction(Double amount, TransactionType type, Account sourceAccount, Account targetAccount) {
+	public Transaction(BigDecimal amount, TransactionType type, Account sourceAccount, Account targetAccount) {
 		this.amount = amount;
 		this.type = type;
 		this.sourceAccount = sourceAccount;
 		this.targetAccount = targetAccount;
+	}
+	
+	public Transaction(BigDecimal amount, TransactionType type, Account account) {
+		this.amount = amount;
+		this.type = type;
+		if(type == TransactionType.DEPOSIT) {
+			this.targetAccount = account;
+			this.sourceAccount = null;
+		} else if(type == TransactionType.WITHDRAW) {
+			this.sourceAccount = account;
+			this.targetAccount = null;
+		} else {
+			throw new InvalidInputException("The transaction type is invalid");
+		}
 	}
 
 	public UUID getId() {
@@ -31,7 +46,7 @@ public class Transaction extends BaseEntity {
 		return transactionTime;
 	}
 
-	public Double getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
 
@@ -66,10 +81,10 @@ public class Transaction extends BaseEntity {
 
 	@Override
 	public String toString() {
+		String sourceAccountNumber = (sourceAccount != null) ? sourceAccount.getAccountNumber() : "N/A";
+		String targetAccountNumber = (targetAccount != null) ? targetAccount.getAccountNumber() : "N/A";
 		return "Transaction [id=" + id + ", transactionTime=" + transactionTime + ", amount=" + amount + ", type=" + type
-				+ ", sourceAccount=" + sourceAccount + ", targetAccount=" + targetAccount + "]";
+				+ ", sourceAccount=" + sourceAccountNumber + ", targetAccount=" + targetAccountNumber + "]";
 	}
-	
-	
 	
 }
