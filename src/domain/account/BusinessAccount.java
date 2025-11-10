@@ -40,11 +40,7 @@ public class BusinessAccount extends Account{
 		BigDecimal fee = amount.multiply(percentualFee);
 		return fee;
 	}
-	
-	/**
-	 * Calculates maximum amount available considering the 0.75% fee.
-	 * Formula: (balance + limit) / (1 + fee)
-	 */
+
 	@Override
 	public BigDecimal getMaxAvailable() {
 		BigDecimal totalAvailable = balance.add(limit);

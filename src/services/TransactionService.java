@@ -25,7 +25,7 @@ public class TransactionService {
 		this.transactionRepository = transactionRepository;
 	}
 
-	public void deposit(BigDecimal amount, Account account) {
+	public void registerDeposit(BigDecimal amount, Account account) {
 		if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
 			throw new BusinessException("Deposit amount must be positive");
 		}
@@ -33,7 +33,7 @@ public class TransactionService {
 		transactionRepository.save(transaction);
 	}
 
-	public void withdraw(BigDecimal amount, Account account) {
+	public void registerWithdraw(BigDecimal amount, Account account) {
 		if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
 			throw new BusinessException("Withdrawal amount must be positive");
 		}

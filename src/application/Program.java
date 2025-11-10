@@ -19,23 +19,19 @@ public class Program {
 
 	public static void main(String[] args) {
 		
-		// === Repositories ===
         AccountRepository accountRepository = new InMemoryAccountRepository();
         ClientRepository clientRepository = new InMemoryClientRepository();
         AgencyRepository agencyRepository = new InMemoryAgencyRepository();
         TransactionRepository transactionRepository = new InMemoryTransactionRepository();
 
-        // === Services ===
         TransactionService transactionService = new TransactionService(transactionRepository);
         ClientService clientService = new ClientService(clientRepository);
         AgencyService agencyService = new AgencyService(agencyRepository);
         AccountService accountService = new AccountService(accountRepository, transactionService, clientService, agencyService);
 
-        // === Input handler & main menu ===
         InputHandler inputHandler = new InputHandler();
         MainMenu mainMenu = new MainMenu(inputHandler, accountService, clientService, agencyService, transactionService);
 
-        // === Start app ===
         mainMenu.start();
 		
 	}

@@ -120,7 +120,7 @@ public class AccountService {
         targetAccount.depositValue(amount);
         accountRepository.save(targetAccount);
 
-        transactionService.deposit(amount, targetAccount);
+        transactionService.registerDeposit(amount, targetAccount);
     }
 
     /**
@@ -156,7 +156,7 @@ public class AccountService {
         sourceAccount.withdrawValue(amount);
         accountRepository.save(sourceAccount);
 
-        transactionService.withdraw(amount, sourceAccount);
+        transactionService.registerWithdraw(amount, sourceAccount);
     }
 
     public void updateLimit(Account account, BigDecimal newLimit) {

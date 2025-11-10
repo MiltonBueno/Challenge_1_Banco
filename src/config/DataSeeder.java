@@ -12,8 +12,7 @@ import services.AgencyService;
 import services.ClientService;
 
 /**
- * Populates system with sample data: 2 agencies, 2 clients (Alice/Bob with password "123"),
- * 2 accounts, and 3 initial transactions.
+ * Populates system with sample data: 2 agencies, 2 clients, 2 accounts, and 3 initial transactions.
  */
 public class DataSeeder {
 	

@@ -9,10 +9,6 @@ import java.util.Locale;
 
 import enums.LocaleFormat;
 
-/**
- * Formats monetary values, dates and times for display.
- * Supports BR (R$ 1.234,56) and US ($1,234.56) currency formats.
- */
 public class NumberFormatter {
 	
 	private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");

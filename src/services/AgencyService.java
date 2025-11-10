@@ -8,7 +8,7 @@ import exceptions.DomainNotFoundException;
 import repositories.AgencyRepository;
 
 /**
- * Service layer for managing agency operations.
+ * Service layer for managing agencies
  */
 public class AgencyService {
 

@@ -16,9 +16,6 @@ public class SavingsAccount extends Account {
 		super(accountNumber, client, agency, balance, BankingConfig.DEFAULT_SAVINGS_ACCOUNT_LIMIT);
 	}
 	
-	/**
-	 * Applies 0.5% interest to current balance.
-	 */
 	public void applyInterest() {    
 		BigDecimal interestRate = BankingConfig.SAVINGS_ACCOUNT_INTEREST_RATE;
 		BigDecimal interest = balance.multiply(interestRate);

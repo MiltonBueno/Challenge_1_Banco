@@ -8,6 +8,9 @@ import exceptions.BusinessException;
 import exceptions.DomainNotFoundException;
 import repositories.ClientRepository;
 
+/**
+ * Service layer for managing agencies
+ */
 public class ClientService {
 
     private final ClientRepository clientRepository;
