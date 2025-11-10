@@ -6,6 +6,9 @@ import java.util.UUID;
 
 import domain.Client;
 
+/**
+ * Repository for Client persistence operations.
+ */
 public interface ClientRepository {
 	
     void save(Client client);

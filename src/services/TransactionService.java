@@ -12,6 +12,11 @@ import exceptions.BusinessException;
 import exceptions.DomainNotFoundException;
 import repositories.TransactionRepository;
 
+/**
+ * Service layer for managing and registering transaction operations.
+ * This class don't directly alter informations of the accounts like balance,
+ * its main purpose is to manage and save all the information about the transactions.
+ */
 public class TransactionService {
 
 	private final TransactionRepository transactionRepository;
@@ -48,6 +53,9 @@ public class TransactionService {
 		return transactionRepository.findAll();
 	}
 	
+	/**
+	 * Finds all transactions where account is either source or target.
+	 */
 	public List<Transaction> findByAccount(Account account) {
 	    return transactionRepository.findAll().stream()
 	            .filter(t -> account.equals(t.getSourceAccount()) || account.equals(t.getTargetAccount()))

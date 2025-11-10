@@ -7,7 +7,11 @@ public class ScreenUtil {
 		System.out.flush();
 	}
 
+	public static void printSeparator(int length) {
+		System.out.println("=".repeat(length));
+	}
+
 	public static void printSeparator() {
-		System.out.println("========================================");
+		printSeparator(40);
 	}
 }

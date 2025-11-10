@@ -5,6 +5,9 @@ import java.util.Optional;
 
 import domain.account.Account;
 
+/**
+ * Repository for Account persistence operations.
+ */
 public interface AccountRepository {
 	
     void save(Account account);

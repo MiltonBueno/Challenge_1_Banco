@@ -44,14 +44,13 @@ public class MainMenu {
     }
 
     private Client loggedClient;
-    private LocaleFormat localeFormat;
     private DataSeeder dataSeeder;
     
     public void start() {
         ScreenUtil.clearScreen();
-        ScreenUtil.printSeparator();
+        ScreenUtil.printSeparator(40);
         System.out.println("  Welcome to the Banking System");
-        ScreenUtil.printSeparator();
+        ScreenUtil.printSeparator(40);
 
         boolean populate = inputHandler.getConfirmation("\nDo you want to pre-populate the system with sample data?");
         if (populate) {
@@ -70,32 +69,36 @@ public class MainMenu {
             
             if (shouldExit) {
                 ScreenUtil.clearScreen();
-                ScreenUtil.printSeparator();
+                ScreenUtil.printSeparator(40);
                 System.out.println("  Thank you for using our services!");
-                ScreenUtil.printSeparator();
+                ScreenUtil.printSeparator(40);
                 return;
             }
         }
     }
     
     private void populateData() {
-    	dataSeeder = new DataSeeder(agencyService, clientService, accountService, transactionService);
+	dataSeeder = new DataSeeder(agencyService, clientService, accountService);
     	dataSeeder.seed();
         System.out.println("System populated successfully!");
     }
 
     private void configureLocale() {
-        System.out.println("\nSelect currency format:");
-        System.out.println("1 - BR (R$ 1.234,56)");
-        System.out.println("2 - US ($1,234.56)");
-        int choice = inputHandler.getInt("Option");
-
-        if(choice != 1 && choice != 2) {
-        	System.out.println("The inserted number is not valid.");
+        LocaleFormat selectedLocale = null;
+        while (selectedLocale == null) {
+            System.out.println("\nSelect currency format:");
+            System.out.println("1 - BR (R$ 1.234,56)");
+            System.out.println("2 - US ($ 1,234.56)");
+            int choice = inputHandler.getInt("Option");
+            try {
+                selectedLocale = LocaleFormat.valueOf(choice);
+            } catch (IllegalArgumentException e) {
+                System.out.println("The inserted number is not valid. Try again.");
+            }
         }
-        
-        this.localeFormat = LocaleFormat.valueOf(choice);
-        System.out.println("\nLocale set to: " + localeFormat);
+
+        BankingConfig.setCurrentLocale(selectedLocale);
+        System.out.println("\nLocale set to: " + BankingConfig.getCurrentLocale());
     }
 
     private void handleLoginOrRegister() {
@@ -154,16 +157,16 @@ public class MainMenu {
 
     private void listAllClients(List<Client> clients) {
         for (int i = 0; i < clients.size(); i++) {
-            System.out.println((i + 1) + " - " + new ClientDTO(clients.get(i)) + ")");
+            System.out.println((i + 1) + " - " + new ClientDTO(clients.get(i)));
         }
     }
 
     private boolean mainLoop() {
         while (true) {
             ScreenUtil.clearScreen();
-            ScreenUtil.printSeparator();
+            ScreenUtil.printSeparator(40);
             System.out.println(" Main Menu - Welcome, " + loggedClient.getName());
-            ScreenUtil.printSeparator();
+            ScreenUtil.printSeparator(40);
             System.out.println("1 - Deposit");
             System.out.println("2 - Withdraw");
             System.out.println("3 - Transfer");
@@ -173,7 +176,7 @@ public class MainMenu {
             System.out.println("7 - Export transactions (CSV)");
             System.out.println("8 - Logout");
             System.out.println("0 - Exit");
-            ScreenUtil.printSeparator();
+            ScreenUtil.printSeparator(40);
 
             int option = inputHandler.getInt("Select an option");
 
@@ -222,7 +225,7 @@ public class MainMenu {
         
         System.out.println("\nDeposit successful!");
         if(loggedClient.getAccounts().contains(targetAccount)) {
-            System.out.println("New balance: " + NumberFormatter.formatAmount(targetAccount.getBalance(), localeFormat));
+            System.out.println("New balance: " + NumberFormatter.formatAmount(targetAccount.getBalance()));
         }
         inputHandler.waitForEnter();
     }
@@ -243,10 +246,10 @@ public class MainMenu {
         }
 
         BigDecimal value = inputHandler.getBigDecimal("Amount to withdraw");
-        accountService.withdraw(sourceAccount, value, localeFormat);
+        accountService.withdraw(sourceAccount, value);
         
         System.out.println("\nWithdraw successful!");
-        System.out.println("New balance: " + NumberFormatter.formatAmount(sourceAccount.getBalance(), localeFormat));
+        System.out.println("New balance: " + NumberFormatter.formatAmount(sourceAccount.getBalance()));
         inputHandler.waitForEnter();
     }
 
@@ -266,7 +269,7 @@ public class MainMenu {
         
         if (LocalTime.now().isAfter(BankingConfig.NIGHT_START) || LocalTime.now().isBefore(BankingConfig.NIGHT_END)) {
             System.out.println("\nAttention! Transfers above " +
-                NumberFormatter.formatAmount(BankingConfig.NIGHT_TRANSFER_LIMIT, localeFormat) +
+                NumberFormatter.formatAmount(BankingConfig.NIGHT_TRANSFER_LIMIT) +
                 " are not allowed between " +
                 NumberFormatter.formatTime(BankingConfig.NIGHT_START) +
                 " and " +
@@ -294,18 +297,18 @@ public class MainMenu {
 
         BigDecimal value = inputHandler.getBigDecimal("Amount to transfer");
 
-        accountService.transfer(source, target, value, localeFormat);
+        accountService.transfer(source, target, value);
         
         System.out.println("\nTransfer completed successfully!");
-        ScreenUtil.printSeparator();
+        ScreenUtil.printSeparator(30);
         System.out.println("  TRANSFER RECEIPT");
-        ScreenUtil.printSeparator();
-        System.out.println("Amount: " + NumberFormatter.formatAmount(value, localeFormat));
+        ScreenUtil.printSeparator(30);
+        System.out.println("Amount: " + NumberFormatter.formatAmount(value));
         System.out.println("From: Account " + source.getAccountNumber() + " (Agency " + source.getAgency().getAgencyNumber() + ")");
         System.out.println("To: Account " + target.getAccountNumber() + " (Agency " + target.getAgency().getAgencyNumber() + ")");
         System.out.println("Recipient: " + target.getClient().getName());
-        System.out.println("New balance: " + NumberFormatter.formatAmount(source.getBalance(), localeFormat));
-        ScreenUtil.printSeparator();
+        System.out.println("New balance: " + NumberFormatter.formatAmount(source.getBalance()));
+        ScreenUtil.printSeparator(30);
         inputHandler.waitForEnter();
     }
 
@@ -327,7 +330,7 @@ public class MainMenu {
         accountService.updateLimit(account, newLimit);
         
         System.out.println("\nLimit updated successfully!");
-        System.out.println("New limit: " + NumberFormatter.formatAmount(newLimit, localeFormat));
+        System.out.println("New limit: " + NumberFormatter.formatAmount(newLimit));
         inputHandler.waitForEnter();
     }
 
@@ -340,16 +343,16 @@ public class MainMenu {
         }
         
         System.out.println("\n" + loggedClient.getName() + "'s Accounts:");
-        ScreenUtil.printSeparator();
+        ScreenUtil.printSeparator(40);
         accounts.forEach(account -> {
             System.out.println(account.getAccountType() + " - #" + account.getAccountNumber());
             System.out.println("  Agency: " + account.getAgency().getAgencyNumber());
-            System.out.println("  Balance: " + NumberFormatter.formatAmount(account.getBalance(), localeFormat));
-            System.out.println("  Limit: " + NumberFormatter.formatAmount(account.getLimit(), localeFormat));
+            System.out.println("  Balance: " + NumberFormatter.formatAmount(account.getBalance()));
+            System.out.println("  Limit: " + NumberFormatter.formatAmount(account.getLimit()));
             System.out.println("  Transactions: " + account.getTransactions().size());
             System.out.println();
         });
-        ScreenUtil.printSeparator();
+        ScreenUtil.printSeparator(40);
         inputHandler.waitForEnter();
     }
 
@@ -391,9 +394,9 @@ public class MainMenu {
         }
         
         System.out.println("\nCongratulations! Account created successfully!");
-        ScreenUtil.printSeparator();
+        ScreenUtil.printSeparator(40);
     	System.out.println(accountDTO);
-        ScreenUtil.printSeparator();
+        ScreenUtil.printSeparator(40);
         inputHandler.waitForEnter();
     }
     
@@ -447,10 +450,10 @@ public class MainMenu {
             delimiter = CsvDelimiter.COMMA;
         }
 
-        String path = inputHandler.getString("Enter file path where CSV will be saved (example: C:\\temp\\transactions.csv)");
+        String path = inputHandler.getString("Enter file path where CSV will be saved (example: C:\\tmp\\transactions.csv)");
         File file = new File(path);
         try {
-            CsvExporter.exportTransactionsToCsv(toExport, file, localeFormat, delimiter);
+            CsvExporter.exportTransactionsToCsv(toExport, file, delimiter);
             System.out.println("\nCSV exported successfully!");
             System.out.println("Location: " + file.getAbsolutePath());
             System.out.println("Transactions exported: " + toExport.size());

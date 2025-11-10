@@ -8,6 +8,7 @@ import java.util.Objects;
 import domain.Agency;
 import domain.Client;
 import domain.transaction.Transaction;
+import util.NumberFormatter;
 
 public abstract class Account{
 
@@ -78,6 +79,14 @@ public abstract class Account{
 	    balance = balance.subtract(amount);
 	    targetAccount.receiveTransfer(amount);
 	}
+	
+	/**
+	 * Calculates maximum amount available for withdrawal or transfer.
+	 * Default implementation: balance + limit
+	 */
+	public BigDecimal getMaxAvailable() {
+		return balance.add(limit);
+	}
 
 	@Override
 	public int hashCode() {
@@ -103,8 +112,8 @@ public abstract class Account{
 		return getAccountType() + " #" + accountNumber + 
 		       " | Owner: " + client.getName() + 
 		       " | Agency: " + agency.getAgencyNumber() + 
-		       " | Balance: " + balance + 
-		       " | Limit: " + limit;
+		       " | Balance: " + NumberFormatter.formatAmount(balance) + 
+		       " | Limit: " + NumberFormatter.formatAmount(limit);
 	}
 	
 }

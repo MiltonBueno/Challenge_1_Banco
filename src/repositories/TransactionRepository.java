@@ -6,6 +6,9 @@ import java.util.UUID;
 
 import domain.transaction.Transaction;
 
+/**
+ * Repository for Transaction persistence operations.
+ */
 public interface TransactionRepository {
 	
     void save(Transaction transaction);

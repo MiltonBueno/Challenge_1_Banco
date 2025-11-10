@@ -7,6 +7,9 @@ import exceptions.BusinessException;
 import exceptions.DomainNotFoundException;
 import repositories.AgencyRepository;
 
+/**
+ * Service layer for managing agency operations.
+ */
 public class AgencyService {
 
     private final AgencyRepository agencyRepository;
@@ -35,6 +38,9 @@ public class AgencyService {
         agencyRepository.deleteByAgencyNumber(agencyNumber);
     }
 
+    /**
+     * Finds an agency by number or creates a new one if it doesn't exist.
+     */
     public Agency findOrCreate(String agencyNumber) {
         return agencyRepository.findByAgencyNumber(agencyNumber)
                 .orElseGet(() -> {

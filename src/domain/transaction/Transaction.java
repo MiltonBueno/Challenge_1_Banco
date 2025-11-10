@@ -8,6 +8,7 @@ import java.util.UUID;
 import domain.BaseIdEntity;
 import domain.account.Account;
 import exceptions.InvalidInputException;
+import util.NumberFormatter;
 
 public class Transaction extends BaseIdEntity {
 	
@@ -17,6 +18,10 @@ public class Transaction extends BaseIdEntity {
     private final Account sourceAccount;
     private final Account targetAccount;
 
+	/**
+	 * Constructor for TRANSFERENCE transactions.
+	 * For DEPOSIT and WITHDRAW, use the single-account constructor.
+	 */
 	public Transaction(BigDecimal amount, TransactionType type, Account sourceAccount, Account targetAccount) {
 		this.amount = amount;
 		this.type = type;
@@ -24,6 +29,15 @@ public class Transaction extends BaseIdEntity {
 		this.targetAccount = targetAccount;
 	}
 	
+	/**
+	 * Constructor for DEPOSIT and WITHDRAW transactions.
+	 * Automatically assigns sourceAccount or targetAccount based on type.
+	 * 
+	 * @param amount the transaction amount
+	 * @param type DEPOSIT or WITHDRAW only
+	 * @param account the account involved
+	 * @throws InvalidInputException if type is TRANSFERENCE
+	 */
 	public Transaction(BigDecimal amount, TransactionType type, Account account) {
 		this.amount = amount;
 		this.type = type;
@@ -83,7 +97,7 @@ public class Transaction extends BaseIdEntity {
 	public String toString() {
 		String sourceAccountNumber = (sourceAccount != null) ? sourceAccount.getAccountNumber() : "N/A";
 		String targetAccountNumber = (targetAccount != null) ? targetAccount.getAccountNumber() : "N/A";
-		return "Transaction [id=" + id + ", transactionTime=" + transactionTime + ", amount=" + amount + ", type=" + type
+		return "Transaction [id=" + id + ", transactionTime=" + NumberFormatter.formatDateTime(transactionTime) + ", amount=" + NumberFormatter.formatAmount(amount) + ", type=" + type
 				+ ", sourceAccount=" + sourceAccountNumber + ", targetAccount=" + targetAccountNumber + "]";
 	}
 	

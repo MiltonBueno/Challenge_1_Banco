@@ -5,6 +5,9 @@ import java.util.Optional;
 
 import domain.Agency;
 
+/**
+ * Repository for Agency persistence operations.
+ */
 public interface AgencyRepository {
 	
     void save(Agency agency);

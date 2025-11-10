@@ -7,27 +7,25 @@ import domain.Client;
 import domain.account.Account;
 import domain.account.BusinessAccount;
 import domain.account.CheckingAccount;
-import enums.LocaleFormat;
 import services.AccountService;
 import services.AgencyService;
 import services.ClientService;
-import services.TransactionService;
 
+/**
+ * Populates system with sample data: 2 agencies, 2 clients (Alice/Bob with password "123"),
+ * 2 accounts, and 3 initial transactions.
+ */
 public class DataSeeder {
 	
-	AgencyService agencyService;
-	ClientService clientService;
-	AccountService accountService;
-	TransactionService transactionService;
-	
-	public DataSeeder(AgencyService agencyService, ClientService clientService, AccountService accountService,
-			TransactionService transactionService) {
-		super();
-		this.agencyService = agencyService;
-		this.clientService = clientService;
-		this.accountService = accountService;
-		this.transactionService = transactionService;
-	}
+    private final AgencyService agencyService;
+    private final ClientService clientService;
+    private final AccountService accountService;
+
+    public DataSeeder(AgencyService agencyService, ClientService clientService, AccountService accountService) {
+        this.agencyService = agencyService;
+        this.clientService = clientService;
+        this.accountService = accountService;
+    }
 	
     public void seed() {
         Agency agency1 = new Agency("001");
@@ -56,8 +54,8 @@ public class DataSeeder {
         clientService.save(client2);
         
         accountService.deposit(acc1, new BigDecimal("500"));
-        accountService.withdraw(acc1, new BigDecimal("200"), LocaleFormat.BR);
-        accountService.transfer(acc1, acc2, new BigDecimal("150"), LocaleFormat.BR);
+        accountService.withdraw(acc1, new BigDecimal("200"));
+        accountService.transfer(acc1, acc2, new BigDecimal("150"));
     }
 }
 

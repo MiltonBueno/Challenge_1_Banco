@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import domain.transaction.Transaction;
 import domain.transaction.TransactionType;
+import util.NumberFormatter;
 
 public class TransactionDTO {
 	
@@ -70,7 +71,7 @@ public class TransactionDTO {
 	public String toString() {
 		String sourceInfo = (sourceAccount != null) ? sourceAccount.getAccountNumber() : "N/A";
 		String targetInfo = (targetAccount != null) ? targetAccount.getAccountNumber() : "N/A";
-		return type + " | Amount: " + amount + " | From: " + sourceInfo + " | To: " + targetInfo + " | Time: " + transactionTime;
+		return type + " | Amount: " + NumberFormatter.formatAmount(amount) + " | From: " + sourceInfo + " | To: " + targetInfo + " | Time: " + NumberFormatter.formatDateTime(transactionTime);
 	}
 	
 }

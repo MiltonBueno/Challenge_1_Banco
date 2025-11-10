@@ -6,6 +6,10 @@ import domain.Agency;
 import domain.Client;
 import util.BankingConfig;
 
+/**
+ * Business account with 0.75% transaction fee on all operations.
+ * Fee is added to withdrawals/transfers and deducted from deposits.
+ */
 public class BusinessAccount extends Account{
 	
 	public BusinessAccount(String accountNumber, Client client, Agency agency, BigDecimal balance) {
@@ -37,7 +41,12 @@ public class BusinessAccount extends Account{
 		return fee;
 	}
 	
-	public BigDecimal getMaxAvailableWithFee() {
+	/**
+	 * Calculates maximum amount available considering the 0.75% fee.
+	 * Formula: (balance + limit) / (1 + fee)
+	 */
+	@Override
+	public BigDecimal getMaxAvailable() {
 		BigDecimal totalAvailable = balance.add(limit);
 		BigDecimal feeMultiplier = BigDecimal.ONE.add(BankingConfig.BUSINESS_ACCOUNT_PERCENTUAL_FEE);
 		return totalAvailable.divide(feeMultiplier, 2, java.math.RoundingMode.DOWN);

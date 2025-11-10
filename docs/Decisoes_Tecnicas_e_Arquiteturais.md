@@ -77,7 +77,7 @@ O valor possível de ser "retirado" da conta, ou seja, sacado ou transferido, é
 
 Decisões de Implementação:
 
-Escolha de BigDecimal na classe Account pela sua maior precisão (mais recomendado ao se trabalhar com dinheiro)
+Escolha de BigDecimal ao lidar com valores financeiros, pela sua maior precisão (mais recomendado ao se trabalhar com dinheiro)
 
 Ao realizar contas utilizando BigDecimal, de acordo com minhas pesquisas faz sentido receber o valor como String e então converter diretamente para BigDecimal sem utilizar double, garante mais segurança e precisão. Para facilitar essa conversão e validação de entradas do usuário, foi criada a classe InputHandler que possui métodos para receber e converter automaticamente os valores em BigDecimal, além de validar entradas de String, int e confirmações (boolean).
 
@@ -88,4 +88,10 @@ Formatação e Localização:
 
 A aplicação implementa um sistema de formatação baseado em localização (LocaleFormat) que permite exibir valores monetários tanto no formato brasileiro (R$ 1.234,56) quanto no formato americano ($1,234.56), utilizando a classe NumberFormatter para a conversão.
 
-O enum CsvDelimiter permite ao usuário escolher o delimitador usado na exportação de transações para CSV, oferecendo as opções COMMA (vírgula) e SEMICOLON (ponto e vírgula), facilitando a compatibilidade com diferentes configurações regionais do Excel (inglês e português).
+A escolha do locale é feita uma única vez no início da aplicação pelo usuário, e então armazenada globalmente na classe BankingConfig através dos métodos getCurrentLocale() e setCurrentLocale(). Isso elimina a necessidade de passar o LocaleFormat como parâmetro em todos os métodos que formatam valores, simplificando e garantindo consistência em toda a aplicação. Todas as formatações de valores monetários (transferências, saques, depósitos, extratos, CSV, etc.) utilizam automaticamente o locale configurado globalmente.
+
+A classe NumberFormatter centraliza toda a formatação de valores numéricos e datas/horas do sistema. O método formatAmount(BigDecimal) consulta automaticamente o locale global configurado em BankingConfig, enquanto formatTime(LocalTime) e formatDateTime(LocalDateTime) fornecem formatação consistente para horários e timestamps. 
+
+O enum CsvDelimiter permite ao usuário escolher o delimitador usado na exportação de transações para CSV, oferecendo as opções COMMA (vírgula) e SEMICOLON (ponto e vírgula), facilitando a compatibilidade com diferentes configurações do Excel (inglês e português).
+
+Ocorreu um problema de encoding no CSV onde o símbolo "R$" aparecia como "R$Â" ao abrir no Excel, para resolver isso foi adicionado o BOM (Byte Order Mark) UTF-8 no início do arquivo exportado. Isso ocorria porque o espaço após "R$" é um non-breaking space (U+00A0) que em UTF-8 é codificado como dois bytes, sendo interpretado incorretamente quando o Excel não reconhecia o encoding do arquivo.

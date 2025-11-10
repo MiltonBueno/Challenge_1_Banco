@@ -175,7 +175,7 @@ sequenceDiagram
     UI->>IH: getBigDecimal("Enter transfer amount")
     IH-->>UI: amount
 
-    UI->>AS: transfer(sourceAccount, targetAccount, amount, localeFormat)
+    UI->>AS: transfer(sourceAccount, targetAccount, amount)
     
     AS->>AS: Validate amount > 0
     
@@ -385,9 +385,9 @@ classDiagram
         +save(Account account) void
         +findByAccountNumber(String number) Account
         +findAll() List~Account~
-        +transfer(Account source, Account target, BigDecimal amount, LocaleFormat localeFormat) void
+        +transfer(Account source, Account target, BigDecimal amount) void
         +deposit(Account targetAccount, BigDecimal amount) void
-        +withdraw(Account sourceAccount, BigDecimal amount, LocaleFormat localeFormat) void
+        +withdraw(Account sourceAccount, BigDecimal amount) void
         +updateLimit(Account account, BigDecimal newLimit) void
         +createBusinessAccount(String accountNumber, Client loggedClient, Agency agency, BigDecimal initialBalance) AccountDTO
         +createCheckingAccount(String accountNumber, Client loggedClient, Agency agency, BigDecimal initialBalance) AccountDTO
@@ -539,6 +539,7 @@ classDiagram
     %% Utility Classes
     class BankingConfig {
         <<utility>>
+        -currentLocale$ LocaleFormat
         +NIGHT_TRANSFER_LIMIT$ BigDecimal
         +NIGHT_START$ LocalTime
         +NIGHT_END$ LocalTime
@@ -547,17 +548,20 @@ classDiagram
         +DEFAULT_CHECKING_ACCOUNT_LIMIT$ BigDecimal
         +DEFAULT_SAVINGS_ACCOUNT_LIMIT$ BigDecimal
         +SAVINGS_ACCOUNT_INTEREST_RATE$ BigDecimal
+        +getCurrentLocale()$ LocaleFormat
+        +setCurrentLocale(LocaleFormat locale)$ void
     }
 
     class NumberFormatter {
         <<utility>>
-        +formatAmount(BigDecimal amount, LocaleFormat localeFormat)$ String
+        +formatAmount(BigDecimal amount)$ String
         +formatTime(LocalTime time)$ String
+        +formatDateTime(LocalDateTime dateTime)$ String
     }
 
     class CsvExporter {
         <<utility>>
-        +exportTransactionsToCsv(List~Transaction~ transactions, File file, LocaleFormat localeFormat, CsvDelimiter delimiter)$ void
+        +exportTransactionsToCsv(List~Transaction~ transactions, File file, CsvDelimiter delimiter)$ void
     }
 
     class InputHandler {
