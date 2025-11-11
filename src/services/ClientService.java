@@ -9,7 +9,7 @@ import exceptions.DomainNotFoundException;
 import repositories.ClientRepository;
 
 /**
- * Service layer for managing agencies
+ * Service layer for managing clients
  */
 public class ClientService {
 
